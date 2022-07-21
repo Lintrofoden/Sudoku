@@ -1,34 +1,37 @@
 let numSelected = null;
 
+let board = []
 
-let board = [
-    "--74916-5",
-    "2---6-3-9",
-    "-----7-1-",
-    "-586----4",
-    "--3----9-",
-    "--62--187",
-    "9-4-7---2",
-    "67-83----",
-    "81--45---"
-]
+let solution = []
 
-let solution = [
-    "387491625",
-    "241568379",
-    "569327418",
-    "758619234",
-    "123784596",
-    "496253187",
-    "934176852",
-    "675832941",
-    "812945763"
-]
+// let board = [
+//     "--74916-5",
+//     "2---6-3-9",
+//     "-----7-1-",
+//     "-586----4",
+//     "--3----9-",
+//     "--62--187",
+//     "9-4-7---2",
+//     "67-83----",
+//     "81--45---"
+// ]
 
-console.log(solution);
+// let solution = [
+//     "387491625",
+//     "241568379",
+//     "569327418",
+//     "758619234",
+//     "123784596",
+//     "496253187",
+//     "934176852",
+//     "675832941",
+//     "812945763"
+// ]
+
 
 window.onload = function() {
-    setGame()
+    createBoard();
+    setGame();
 }
 
 function setGame(){
@@ -99,4 +102,97 @@ function check(){
         }
         document.getElementById("answer").innerHTML = "Верно решено";
     }
+}
+
+function createBoard(){
+    // создание базовой доски
+    let k = "123456789";
+    let g = 0;
+    for(let i = 0; i <= 8; i++)
+    {
+        let v = "";
+        for(let z = 0; z <= 8; z++)
+        {
+            v = v + k[g];
+            g++;
+            if(g >= 9){
+                g = 0;
+            }
+        }
+        switch (g){
+            case 6:
+                g = 1;
+                break;
+            case 7:
+                g = 2;
+                break;
+            case 8:
+                g = 3;
+                break;
+            default:
+                g = g + 3;
+        }
+        solution.push(v);
+    }
+    // перемешиваем
+    mixBoard(solution);
+    solution = rotateBoard(solution);
+    mixBoard(solution);
+    solution = rotateBoard(solution);
+    mixBoard(solution);
+    
+    for(let l = 0; l <= 8; l++){
+        board.push(solution[l]);
+    }
+    cellsDeletion(board);
+    console.log(solution);
+}
+
+function mixBoard(board){
+    for(let i = 0; i <= 20; i++){
+        let firstRow = Math.floor(Math.random() * 9);
+        let secondRow = Math.floor(Math.random() * 9);
+        while(firstRow == secondRow || Math.floor(firstRow/3) != Math.floor(secondRow/3)){
+            firstRow = Math.floor(Math.random() * 9);
+            secondRow = Math.floor(Math.random() * 9);
+        }
+        [board[firstRow], board[secondRow]] = [board[secondRow], board[firstRow]];
+    }
+}
+
+function rotateBoard(board){
+    helpBoard = [];
+    for(let i = 0; i <= 8; i++){
+        let k = "";
+        for(let j = 0; j <= 8; j++){
+            k = k + board[j][i];
+        }
+        helpBoard.push(k);
+    }
+    return helpBoard;
+}
+
+function cellsDeletion(table){
+    quantity = []
+    let k = 0;
+    for(let i = 0; i <= 8; i++){
+        quantity.push(randomInteger(4, 6));
+        k = k + quantity[i];
+    }
+    for(let i = 0; i <= 8; i++){
+        let k = quantity[i];
+        while(k > 0){
+            let r = Math.floor(Math.random() * 9);
+            let firstPart = table[i].slice(0, r);
+            let secondPart = table[i].slice(++r);
+            let a = firstPart + "-" + secondPart;
+            table[i] = a;
+            --k;
+        }
+    }
+}
+
+function randomInteger(min, max) {
+    let rand = min + Math.random() * (max - min + 1);
+    return Math.round(rand);
 }

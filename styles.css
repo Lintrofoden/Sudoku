@@ -11,7 +11,8 @@ h1{
 }
 
 hr{
-    margin: 0 200px;
+    width: 50%;
+    margin: 0 auto;
 }
 
 #board{
